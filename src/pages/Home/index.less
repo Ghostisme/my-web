@@ -1,0 +1,33 @@
+.container{
+    background: #f5f5f5;
+    padding: 20px;
+}
+
+.card-container{
+    margin-bottom: 20px;
+}
+
+.avatar-container{
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.avatar{
+    transform: rotate(0deg);
+    animation: runAvatar 1.5s linear infinite;
+    width: 106px !important;
+    height: 106px !important;
+    line-height: 106px !important;
+}
+
+@keyframes runAvatar {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -47,7 +47,7 @@ export default defineConfig({
         ws: true,
         /** 是否允许跨域 */
         changeOrigin: true,
-        rewrite: (path) => path.replace('/api/v1', ''),
+        rewrite: (path) => path.replace('/api/v1', '/api/v1'),
       },
     },
   },

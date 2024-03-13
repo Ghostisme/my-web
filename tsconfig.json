@@ -1,35 +1,29 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "target": "ESNext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    // "checkJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
+    "target": "esnext",
+    /** https://cn.vitejs.dev/guide/features.html#typescript-compiler-options */
+    "useDefineForClassFields": true,
     "module": "esnext",
     "moduleResolution": "node",
+    /** TS 严格模式 */
+    "strict": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
     "resolveJsonModule": true,
+    /** https://cn.vitejs.dev/guide/features.html#typescript-compiler-options */
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "suppressImplicitAnyIndexErrors": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "skipLibCheck": true,
+    // "suppressImplicitAnyIndexErrors": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     }
   },
-  "include": [
-    "src",
-  ],
-  "exclude": [
-    "src/SOURCE-CODE-ANALYSIS"
-  ],
+  "include": ["src"],
+  "exclude": ["src/SOURCE-CODE-ANALYSIS", "node_modules", "dist"]
 }

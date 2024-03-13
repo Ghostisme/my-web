@@ -5,18 +5,28 @@ import {
   UserOutlined,
   LockOutlined,
 } from '@ant-design/icons';
-import { login } from '@/apis/login';
+import useUserHook from '@/hooks/useUser';
 import './index.less';
+import { useHistory } from 'react-router';
 
 export default function index() {
-  console.log('登录页');
+  const history = useHistory();
+  const UserHooks = useUserHook();
   const handleFinish = async (values: any) => {
     console.log('Received values of form: ', values);
     const params = {
       ...values,
     };
-    const res = await login(params);
+    if (values.remember) {
+      // 记住账号
+      localStorage.setItem('loginInfo', values);
+    }
+    const res = await UserHooks.login(params);
     console.log(res, '测试登录接口');
+    if (res) {
+      // 登录成功
+      // history.push('/welcome');
+    }
   };
   return (
     <div className='login-container'>

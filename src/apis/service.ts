@@ -1,151 +1,92 @@
-import axios from 'axios';
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { useHistory } from 'react-router-dom';
-import { message } from 'antd';
-import { getToken, setToken } from '@/utils';
+import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
+// import { useUserStoreHook } from "@/store/modules/user"
+import { notification } from 'antd';
+import { get } from 'lodash-es';
+import { getToken } from '@/utils/cache/cookies';
+import { successRequest } from '@/utils/http/successRequest';
+import { errorCode } from '@/utils/http/errorRequest';
 
-// 导出Request，可以用来自定义传递配置来创建实例
-const defaultMsg = '系统开小差，请稍后重试!';
-const TOKEN = 'x-auth-token';
-type Result<T> = {
-  code: number;
-  msg: string;
-  data: T;
-} & AxiosResponse<T>;
-// 暂时只覆盖了如下部分的code值，可能会有遗漏
-function handleError(code: number, msg: string = defaultMsg) {
-  const history = useHistory();
-  switch (code) {
-    case 503:
-      message.error('账户已被冻结');
-      break;
-    case 410:
-    case 412:
-    case 501:
-      message.error(msg);
-      history.push('/login');
-      break;
-    default:
-      message.error(msg);
-      break;
-  }
-}
-export class Request {
-  // axios 实例
-  instance: AxiosInstance;
-  // 基础配置，url和超时时间
-  baseConfig: AxiosRequestConfig = { baseURL: '/api/v1', timeout: 30 * 1000 };
-
-  constructor(config: AxiosRequestConfig) {
-    // 使用axios.create创建axios实例，配置为基础配置和我们传递进来的配置
-    this.instance = axios.create(Object.assign(this.baseConfig, config));
-    if (import.meta.env.VITE_API_BASE_URL) {
-      this.instance.defaults.baseURL =
-        import.meta.env.VITE_API_BASE_URL + import.meta.env.VITE_API_PREFIX_URL;
-      // axios.defaults.baseURL = '/aaa/v1';
-    }
-    this.instance.interceptors.request.use(
-      (config: AxiosRequestConfig) => {
-        const token = getToken();
-        if (token) {
-          if (!config.headers) {
-            config.headers = {};
-          }
-          config.headers[TOKEN] = token;
-          // config.headers['accessToken'] = 'c043a1d3691a48a2a6355c83ecba7ffd_5088';
-          // config.headers['version'] = '123456';
+/** 创建请求实例 */
+function createService() {
+  // 创建一个 Axios 实例
+  const service = axios.create();
+  // 请求拦截
+  service.interceptors.request.use(
+    (config) => config,
+    // 发送失败
+    (error) => Promise.reject(error)
+  );
+  // 响应拦截（可根据具体业务作出相应的调整）
+  service.interceptors.response.use(
+    (response) => {
+      // apiData 是 API 返回的数据
+      const apiData = response.data as any;
+      // 这个 Code 是和后端约定的业务 Code
+      const code = apiData.code;
+      if (response.status === 200) {
+        if (response.headers['content-type'] === 'application/zip') {
+          // 下载文件
         }
-        return config;
-      },
-      (error) => {
-        message.error(error.msg || defaultMsg);
+        return successRequest(code, apiData);
+      } else {
+        notification.error(
+          Object.assign({}, errorCode(code, apiData), { closeIcon: false })
+        );
+      }
+    },
+    (error) => {
+      // Status 是 HTTP 状态码
+      const status = get(error, 'response.status');
+      notification.error(
+        Object.assign({}, errorCode(status, error), { closeIcon: false }) ?? ''
+      );
+      if (error.name === 'AxiosError') {
+        return Promise.resolve(null);
+      } else {
         return Promise.reject(error);
       }
-    );
-    this.instance.interceptors.response.use(
-      (res: AxiosResponse) => {
-        return res;
-        // const token = res?.headers && res?.headers[TOKEN];
-        // if( token ){
-        //   setToken(token);
-        // }
-        // // console.log(res, '=res');
-        // const resData = res.data || {}
-        // const { code, data, msg } = resData;
-        // if ( code === 200 || code === 0 ) return resData;
-        // // if ( code === 0 ) return resData;
-        // if ( code === undefined ) return resData; // 上传、下载文件的接口如果访问正常会直接返回文件数据，不会有code值
-        // handleError(code, msg);
-        // return Promise.reject(resData);
-      },
-      (error) => {
-        message.error(error.msg || defaultMsg);
-        return Promise.reject(error);
-      }
-    );
-  }
-
-  // 定义请求方法
-  public request(config: AxiosRequestConfig): Promise<AxiosResponse> {
-    return this.instance.request(config);
-  }
-
-  public get<T = any>(
-    url: string,
-    config?: AxiosRequestConfig
-  ): Promise<Result<T>> {
-    return this.instance.get(url, config);
-  }
-
-  public post<T = any>(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig
-  ): Promise<Result<T>> {
-    return this.instance.post(url, data, config).then((res) => {
-      const token = res?.headers && res?.headers[TOKEN];
-      if (token) {
-        setToken(token);
-      }
-      const resData = res.data || {};
-      const { code, data, msg } = resData;
-      if (code === 200 || code === 0) return resData;
-      if (code === undefined) return resData; // 上传、下载文件的接口如果访问正常会直接返回文件数据，不会有code值
-      handleError(code, msg);
-      // return Promise.reject(resData);
-      return Promise.resolve(resData);
-      // return resData;
-    });
-  }
-
-  public put<T = any>(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig
-  ): Promise<Result<T>> {
-    return this.instance.put(url, data, config).then((res) => {
-      const token = res?.headers && res?.headers[TOKEN];
-      if (token) {
-        setToken(token);
-      }
-      const resData = res.data || {};
-      const { code, data, msg } = resData;
-      if (code === 200 || code === 0) return resData;
-      if (code === undefined) return resData; // 上传、下载文件的接口如果访问正常会直接返回文件数据，不会有code值
-      handleError(code, msg);
-      // return Promise.reject(resData);
-      return Promise.resolve(resData);
-      // return resData;
-    });
-  }
-
-  public delete<T = any>(
-    url: string,
-    config?: AxiosRequestConfig
-  ): Promise<Result<T>> {
-    return this.instance.delete(url, config);
-  }
+    }
+  );
+  return service;
 }
 
-// 默认导出Request实例
-export default new Request({});
+/** 创建请求方法 */
+function createRequestFunction(service: AxiosInstance) {
+  return function <T>(config: AxiosRequestConfig): Promise<T> {
+    const configDefault = {
+      headers: {
+        // 携带 Token
+        Authorization: 'token ' + getToken(),
+        token: getToken(),
+        'Content-Type': get(config, 'headers.Content-Type', 'application/json'),
+      },
+      timeout: 5000,
+      baseURL: import.meta.env.VITE_BASE_API,
+      data: {},
+    };
+    return service(Object.assign(configDefault, config));
+  };
+}
+
+/** 用于网络请求的实例 */
+export const service = createService();
+/** 用于网络请求的方法 */
+export const request = createRequestFunction(service);
+interface Config extends AxiosRequestConfig<any> {
+  isResponseType?: boolean;
+}
+const createFileFunction = (obj: Config) => {
+  return axios({
+    ...obj,
+    responseType: obj.isResponseType ? 'blob' : 'json',
+    headers: {
+      ...obj.headers,
+      token: getToken(),
+    },
+    timeout: 60 * 60 * 1000,
+    // onDownloadProgress: (progressEvent) => {
+    //   console.log(progressEvent, "progressEvent")
+    // }
+  });
+};
+export const fileRequest = createFileFunction;

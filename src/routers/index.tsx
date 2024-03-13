@@ -1,12 +1,12 @@
-import React, { Suspense } from "react";
+import React, { Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Route,
   Redirect,
   Switch,
-} from "react-router-dom";
-import routes from "./modules/basic";
-import LoadingPage from "@/components/LoadingPage";
+} from 'react-router-dom';
+import routes from './modules/basic';
+import LoadingPage from '@/components/LoadingPage';
 
 const renderRoutes = (routes: any[]) => {
   console.log(`output->routes`, routes);
@@ -19,7 +19,7 @@ const renderRoutes = (routes: any[]) => {
         // console.log(route, "路由配置文件");
         // console.log(route.redirect, "route.redirect");
         if (route.redirect) {
-          console.log("进来了", route);
+          console.log('进来了', route);
           const redurect = (
             <Redirect
               key={route.path || index}

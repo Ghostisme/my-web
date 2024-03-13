@@ -96,7 +96,7 @@ const routes = [
         exact: true,
         redirect: '/login',
       },
-      { path: '*', exact: true, redirect: '/exception/404' },
+      // { path: '*', exact: true, redirect: '/' },
     ],
   },
 ];

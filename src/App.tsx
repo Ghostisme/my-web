@@ -1,16 +1,17 @@
-import React, { useState } from "react";
-import { Button, ConfigProvider } from "antd";
-import enUS from "antd/es/locale/en_US";
-import zhCn from "antd/es/locale/zh_CN";
-import { newZhCn, newEnUS } from "./utils/local";
-import AppRoutes from "./routers";
-import "antd/dist/antd.css";
+import React, { useState } from 'react';
+import { Button, ConfigProvider } from 'antd';
+import enUS from 'antd/es/locale/en_US';
+import zhCn from 'antd/es/locale/zh_CN';
+import { newZhCn, newEnUS } from './utils/local';
+import AppRoutes from './routers';
+import useUserHook from '@/hooks/useUser';
+import 'antd/dist/antd.css';
 
 const App: React.FC = () => {
   const [locale, setLocale] = useState(newEnUS);
   const handleClick = () => {
     // console.log(zhCn, "locale");
-    if (locale.locale === "zh-cn") {
+    if (locale.locale === 'zh-cn') {
       setLocale(newEnUS);
     } else {
       setLocale(newZhCn);
@@ -19,7 +20,7 @@ const App: React.FC = () => {
   return (
     <ConfigProvider locale={locale}>
       {/* <Button onClick={handleClick}>点击切换</Button> */}
-      <AppRoutes />
+      <AppRoutes {...useUserHook()} />
     </ConfigProvider>
   );
 };

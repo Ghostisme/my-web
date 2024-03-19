@@ -1,5 +1,5 @@
 import { notification } from 'antd';
-import useUserHook from '@/hooks/useUser';
+// import useUserHook from '@/hooks/useUser';
 
 export const successRequest = (code: number | undefined, apiData: any) => {
   if (code === undefined) {
@@ -20,7 +20,8 @@ export const successRequest = (code: number | undefined, apiData: any) => {
           closeIcon: false,
         });
         setTimeout(() => {
-          useUserHook().logout();
+          // useUserHook().logout();
+          window.location.href = '/login';
         }, 2000);
         return Promise.reject(new Error('Error'));
       default:

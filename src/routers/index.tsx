@@ -1,14 +1,17 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Route,
   Redirect,
   Switch,
+  useHistory,
+  useLocation,
 } from 'react-router-dom';
 import routes from './modules/basic';
 import LoadingPage from '@/components/LoadingPage';
+import useUserHook from '@/hooks/useUser';
 
-const renderRoutes = (routes: any[]) => {
+const renderRoutes = (routes: any[], props: any) => {
   console.log(`output->routes`, routes);
   if (!Array.isArray(routes)) {
     return null;
@@ -27,6 +30,7 @@ const renderRoutes = (routes: any[]) => {
               strict={route.strict}
               from={route.path}
               to={route.redirect}
+              {...props}
             />
           );
           // console.log(redurect, "redurect");
@@ -37,6 +41,7 @@ const renderRoutes = (routes: any[]) => {
               strict={route.strict}
               from={route.path}
               to={route.redirect}
+              {...props}
             />
           );
         }
@@ -47,11 +52,11 @@ const renderRoutes = (routes: any[]) => {
             exact={route.exact}
             strict={route.strict}
             render={() => {
-              const renderChildRoutes = renderRoutes(route.childRoutes);
+              const renderChildRoutes = renderRoutes(route.childRoutes, props);
               if (route.component) {
                 return (
                   <Suspense fallback={<LoadingPage />}>
-                    <route.component route={route}>
+                    <route.component route={route} {...props}>
                       {renderChildRoutes}
                     </route.component>
                   </Suspense>
@@ -66,5 +71,16 @@ const renderRoutes = (routes: any[]) => {
   );
 };
 // console.log(renderRoutes(routes), "renderRoutes(routes)");
-const AppRoutes = () => <Router>{renderRoutes(routes)}</Router>;
+const AppRoutes = (props: any) => {
+  console.log(props, 'AppRoutes');
+  const history = useHistory();
+  // const location = useLocation();
+  const { auth, login, logout } = useUserHook();
+  // useEffect(() => {
+  //   if (!auth.isLogin) {
+  //     history.push('/login');
+  //   }
+  // }, [auth.isLogin, history]);
+  return <Router {...props}>{renderRoutes(routes, props)}</Router>;
+};
 export default AppRoutes;

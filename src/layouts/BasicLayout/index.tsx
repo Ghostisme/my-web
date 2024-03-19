@@ -1,10 +1,10 @@
-import React from "react";
-import { Layout } from "antd";
-import MainFooter from "../MainFooter";
-import MainHeader from "../MainHeader";
-import SiderMenu from "../SiderMenu";
-import Breadcrumb from "@/components/Breadcrumb";
-import "./index.less";
+import React from 'react';
+import { Layout } from 'antd';
+import MainFooter from '../MainFooter';
+import MainHeader from '../MainHeader';
+import SiderMenu from '../SiderMenu';
+import Breadcrumb from '@/components/Breadcrumb';
+import './index.less';
 
 // export default function index() {
 //   return <div>index</div>;
@@ -22,15 +22,15 @@ const BasicLayout = (props: {
     | null
     | undefined;
 }) => {
-  // console.log("BasicLayout", props);
+  // console.log('BasicLayout', props);
   return (
-    <Layout className="container-layout">
+    <Layout className='container-layout'>
       <SiderMenu routes={props.route.childRoutes}></SiderMenu>
-      <Layout className="main-layout">
-        <MainHeader></MainHeader>
-        <Content className="main">
+      <Layout className='main-layout'>
+        <MainHeader {...props}></MainHeader>
+        <Content className='main'>
           <Breadcrumb routes={props.route}></Breadcrumb>
-          <div className="main-container">{props?.children}</div>
+          <div className='main-container'>{props?.children}</div>
           {/* <MainFooter></MainFooter> */}
         </Content>
       </Layout>

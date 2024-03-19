@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 import vitePluginImp from 'vite-plugin-imp';
 import path from 'path';
 
+const targetLocal = 'http://localhost:81';
+const targetCloud = 'http://www.mydarkking.com';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -43,7 +45,7 @@ export default defineConfig({
     port: 80,
     proxy: {
       '/api/v1': {
-        target: 'http://www.mydarkking.com',
+        target: targetLocal,
         ws: true,
         /** 是否允许跨域 */
         changeOrigin: true,

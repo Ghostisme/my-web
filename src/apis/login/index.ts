@@ -11,7 +11,7 @@ export const login = (params: Login.LoginParams) => {
 
 export const logout = () => {
   return request({
-    method: 'post',
+    method: 'get',
     url: '/api/v1/logout',
   });
 };

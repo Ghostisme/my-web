@@ -30,7 +30,7 @@ const routes = [
         component: lazy(() => import('@/pages/Login')),
       },
       {
-        path: '/index',
+        path: '',
         component: BasicLayout,
         childRoutes: [
           {
@@ -91,12 +91,12 @@ const routes = [
           },
         ],
       },
-      {
-        path: '/',
-        exact: true,
-        redirect: '/login',
-      },
-      // { path: '*', exact: true, redirect: '/' },
+      // {
+      //   path: '/',
+      //   exact: true,
+      //   redirect: '/login',
+      // },
+      { path: '*', exact: true, redirect: '/exception/404' },
     ],
   },
 ];

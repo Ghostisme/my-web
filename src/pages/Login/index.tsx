@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Checkbox, Button } from 'antd';
 import {
   InfoCircleOutlined,
@@ -9,21 +9,46 @@ import useUserHook from '@/hooks/useUser';
 import './index.less';
 import { useHistory } from 'react-router';
 
-export default function index() {
+export default function index(props: any) {
   const history = useHistory();
-  const UserHooks = useUserHook();
+  // const { auth, login, logout } = useUserHook();
+  const [remember, setRemember] = useState(false);
+  const [form] = Form.useForm();
+  useEffect(() => {
+    const localLoginInfo = JSON.parse(
+      localStorage.getItem('loginInfo') || '{}'
+    );
+    localLoginInfo.remember && form.setFieldsValue(localLoginInfo);
+  }, [remember, form]);
+  useEffect(() => {
+    console.log(props.auth, 'auth');
+    if (props.auth.isLogin) {
+      // 登录过
+      history.push('/welcome');
+    }
+  }, [props.auth]);
   const handleFinish = async (values: any) => {
     console.log('Received values of form: ', values);
     const params = {
       ...values,
     };
+    setRemember(values.remember);
     if (values.remember) {
       // 记住账号
-      localStorage.setItem('loginInfo', values);
+      localStorage.setItem('loginInfo', JSON.stringify(values));
+    } else {
+      localStorage.removeItem('loginInfo');
     }
-    const res = await UserHooks.login(params);
+    const res = await props.login(params);
     console.log(res, '测试登录接口');
     if (res) {
+      // props.setAuth({
+      //   isLogin: true,
+      //   admin: res.user.role.role === 'admin',
+      //   username: res.user.username,
+      //   role: res.user.role.role,
+      // });
+      // console.log(props.auth, 'auth');
       // 登录成功
       // history.push('/welcome');
     }
@@ -38,7 +63,7 @@ export default function index() {
         </div>
         <div className='login-form-box'>
           <div className='form-title'>后台登录</div>
-          <Form className='login-form' onFinish={handleFinish}>
+          <Form className='login-form' form={form} onFinish={handleFinish}>
             <Form.Item
               label=''
               name='username'

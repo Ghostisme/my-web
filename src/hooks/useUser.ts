@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, createContext, useReducer } from 'react';
 import { notification } from 'antd';
 import { getToken, removeToken, setToken } from '@/utils/cache/cookies';
 import { createAesKey, aesEncrypt, aesDecrypt } from '@/utils/crypto';
@@ -6,8 +6,12 @@ import { login, logout } from '@/apis/login';
 import type Login from '@/apis/login/index.d';
 
 const useUserHook = () => {
-  const [roles, setRoles] = useState({});
-  const [username, setUserName] = useState('');
+  const [auth, setAuth] = useState({
+    isLogin: false,
+    admin: false,
+    username: '',
+    role: 'user',
+  });
   const key = 'qgajvd17wljhaicq';
   const loginFn = async (params: Login.LoginParams) => {
     const res = await login({
@@ -22,16 +26,32 @@ const useUserHook = () => {
         closeIcon: false,
       });
       setToken(res.token);
+      setAuth({
+        isLogin: true,
+        admin: res.user.role.role === 'admin',
+        username: res.user.username,
+        role: res.user.role.role,
+      });
+      console.log(auth, '接口');
       return res;
     }
   };
   const logoutFn = async () => {
     const res = await logout();
     console.log(res, '登出');
+    if (!res) {
+      setAuth({
+        isLogin: false,
+        admin: false,
+        username: '',
+        role: 'user',
+      });
+    }
+    return res;
   };
   return {
-    roles,
-    username,
+    auth,
+    setAuth,
     login: loginFn,
     logout: logoutFn,
   };

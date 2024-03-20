@@ -71,9 +71,23 @@ const routes = [
           // },
           {
             path: '/setting',
-            component: lazy(() => import('@/pages/Setting')),
+            // component: lazy(() => import('@/pages/Setting')),
             icon: <SettingOutlined />,
             name: '设置',
+            childRoutes: [
+              {
+                path: '/user',
+                component: lazy(() => import('@/pages/User')),
+                icon: <SettingOutlined />,
+                name: '用户设置',
+              },
+              {
+                path: '/role',
+                component: lazy(() => import('@/pages/Role')),
+                icon: <SettingOutlined />,
+                name: '角色设置',
+              },
+            ],
           },
         ],
       },

@@ -67,9 +67,7 @@ export default function index(props: any) {
             <Form.Item
               label=''
               name='username'
-              rules={[
-                { required: true, message: 'Please input your username!' },
-              ]}
+              rules={[{ required: true, message: '请输入用户名或手机号!' }]}
             >
               <Input
                 placeholder='Enter your username'
@@ -79,9 +77,7 @@ export default function index(props: any) {
             <Form.Item
               label=''
               name='password'
-              rules={[
-                { required: true, message: 'Please input your password!' },
-              ]}
+              rules={[{ required: true, message: '请输入密码!' }]}
             >
               <Input.Password
                 prefix={<LockOutlined className='site-form-item-icon' />}

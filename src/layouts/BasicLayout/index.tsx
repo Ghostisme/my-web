@@ -23,13 +23,14 @@ const BasicLayout = (props: {
     | undefined;
 }) => {
   // console.log('BasicLayout', props);
+  // console.log(props?.children, 'props?.children');
   return (
     <Layout className='container-layout'>
       <SiderMenu routes={props.route.childRoutes}></SiderMenu>
       <Layout className='main-layout'>
         <MainHeader {...props}></MainHeader>
         <Content className='main'>
-          <Breadcrumb routes={props.route}></Breadcrumb>
+          {/* <Breadcrumb routes={props.route}></Breadcrumb> */}
           <div className='main-container'>{props?.children}</div>
           {/* <MainFooter></MainFooter> */}
         </Content>

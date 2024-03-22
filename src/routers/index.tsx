@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -12,7 +12,8 @@ import LoadingPage from '@/components/LoadingPage';
 import useUserHook from '@/hooks/useUser';
 
 const renderRoutes = (routes: any[], props: any) => {
-  console.log(`output->routes`, routes);
+  // console.log(`output->routes`, routes);
+  // const [renderChildRoutes, setRenderChildRoutes] = useState([])
   if (!Array.isArray(routes)) {
     return null;
   }
@@ -22,7 +23,7 @@ const renderRoutes = (routes: any[], props: any) => {
         // console.log(route, "路由配置文件");
         // console.log(route.redirect, "route.redirect");
         if (route.redirect) {
-          console.log('进来了', route);
+          // console.log('进来了', route);
           const redurect = (
             <Redirect
               key={route.path || index}
@@ -52,6 +53,10 @@ const renderRoutes = (routes: any[], props: any) => {
             exact={route.exact}
             strict={route.strict}
             render={() => {
+              // console.log(route.childRoutes, 'route.childRoutes');
+              // if (route.childRoutes && route.childRoutes.length !== 0) {
+              //   renderRoutes(route.childRoutes, props);
+              // }
               const renderChildRoutes = renderRoutes(route.childRoutes, props);
               if (route.component) {
                 return (
@@ -62,6 +67,7 @@ const renderRoutes = (routes: any[], props: any) => {
                   </Suspense>
                 );
               }
+              // return renderRoutes(route.childRoutes, props);
               return renderChildRoutes;
             }}
           ></Route>
@@ -72,7 +78,7 @@ const renderRoutes = (routes: any[], props: any) => {
 };
 // console.log(renderRoutes(routes), "renderRoutes(routes)");
 const AppRoutes = (props: any) => {
-  console.log(props, 'AppRoutes');
+  // console.log(props, 'AppRoutes');
   const history = useHistory();
   // const location = useLocation();
   const { auth, login, logout } = useUserHook();

@@ -1,7 +1,7 @@
-import React from "react";
-import { Card, Table } from "antd";
-import { TableProps } from "antd/es/table";
-import "./index.less";
+import React from 'react';
+import { Card, Table } from 'antd';
+import { TableProps } from 'antd/es/table';
+import './index.less';
 
 function TableList(
   props: JSX.IntrinsicAttributes &
@@ -10,8 +10,8 @@ function TableList(
     }
 ) {
   return (
-    <Card className="card-table">
-      <Table className="table-container" {...props}></Table>
+    <Card className='card-table'>
+      <Table className='table-container' {...props}></Table>
     </Card>
   );
 }

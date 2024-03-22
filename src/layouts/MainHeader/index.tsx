@@ -56,7 +56,7 @@ const handleMenuClick = async (e: MenuInfo, props: any, history: any) => {
 
 function MainHeader(props: any) {
   const history = useHistory();
-  console.log(props, 'MainHeader');
+  // console.log(props, 'MainHeader');
   // useEffect(() => {
   //   console.log(props.auth, 'props.auth');
   // }, [props.auth.isLogin]);

@@ -8,7 +8,7 @@ import useUserHook from '@/hooks/useUser';
 import 'antd/dist/antd.css';
 
 const App: React.FC = () => {
-  const [locale, setLocale] = useState(newEnUS);
+  const [locale, setLocale] = useState(newZhCn);
   const handleClick = () => {
     // console.log(zhCn, "locale");
     if (locale.locale === 'zh-cn') {

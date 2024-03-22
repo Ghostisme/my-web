@@ -2,7 +2,7 @@ import { useState, useContext, createContext, useReducer } from 'react';
 import { notification } from 'antd';
 import { getToken, removeToken, setToken } from '@/utils/cache/cookies';
 import { createAesKey, aesEncrypt, aesDecrypt } from '@/utils/crypto';
-import { login, logout } from '@/apis/login';
+import Api from '@/apis';
 import type Login from '@/apis/login/index.d';
 
 const useUserHook = () => {
@@ -14,7 +14,7 @@ const useUserHook = () => {
   });
   const key = 'qgajvd17wljhaicq';
   const loginFn = async (params: Login.LoginParams) => {
-    const res = await login({
+    const res = await Api.login({
       username: params.username,
       password: aesEncrypt(params.password, key),
       // password: params.password,
@@ -37,7 +37,7 @@ const useUserHook = () => {
     }
   };
   const logoutFn = async () => {
-    const res = await logout();
+    const res = await Api.logout();
     console.log(res, '登出');
     if (!res) {
       setAuth({

@@ -53,7 +53,7 @@ const renderRoutes = (routes: any[], props: any) => {
             exact={route.exact}
             strict={route.strict}
             render={() => {
-              // console.log(route.childRoutes, 'route.childRoutes');
+              console.log(route.childRoutes, 'route.childRoutes');
               // if (route.childRoutes && route.childRoutes.length !== 0) {
               //   renderRoutes(route.childRoutes, props);
               // }
@@ -87,6 +87,6 @@ const AppRoutes = (props: any) => {
   //     history.push('/login');
   //   }
   // }, [auth.isLogin, history]);
-  return <Router {...props}>{renderRoutes(routes, props)}</Router>;
+  return <Router>{renderRoutes(routes, props)}</Router>;
 };
 export default AppRoutes;

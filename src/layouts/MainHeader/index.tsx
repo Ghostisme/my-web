@@ -1,15 +1,8 @@
 import React, { useEffect } from 'react';
-import {
-  Layout,
-  Row,
-  Col,
-  Dropdown,
-  Menu,
-  type MenuProps,
-  MenuInfo,
-} from 'antd';
+import { Layout, Row, Col, Dropdown, Menu, type MenuProps } from 'antd';
 import { SmileOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
+import { getCache } from '@/utils';
 import './index.less';
 
 const { Header } = Layout;
@@ -43,7 +36,7 @@ const menus: MenuProps['items'] = [
 //     </Menu.Item>
 //   </Menu>
 // );
-const handleMenuClick = async (e: MenuInfo, props: any, history: any) => {
+const handleMenuClick = async (e: any, props: any, history: any) => {
   console.log(e, 'handleMenuClick', props);
 
   if (e.key === '2') {
@@ -56,6 +49,7 @@ const handleMenuClick = async (e: MenuInfo, props: any, history: any) => {
 
 function MainHeader(props: any) {
   const history = useHistory();
+  const userInfo = JSON.parse(getCache('userInfo') || '{}');
   // console.log(props, 'MainHeader');
   // useEffect(() => {
   //   console.log(props.auth, 'props.auth');
@@ -76,7 +70,7 @@ function MainHeader(props: any) {
               <span className='user-img' />
               <span className='user-name'>
                 {/* {globalStore.userInfo.loginName} */}
-                {props.auth.username}
+                {props.auth.username ?? userInfo.username}
               </span>
             </div>
           </Dropdown>

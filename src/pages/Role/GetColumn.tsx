@@ -20,7 +20,7 @@ export const GetCloumn = (
   setIsChecked: Function
 ) => {
   // 表格操作列事件
-  const handleClick = (type: DataType.BtnType, row: User.UserInfo) => {
+  const handleClick = (type: DataType.BtnType, row: Role.RoleInfo) => {
     const defaultSetting: DataType.ModalSetting = {
       title: '',
       centered: true,
@@ -30,7 +30,7 @@ export const GetCloumn = (
       type,
     };
     if (type === 'view') {
-      defaultSetting.title = '查看用户';
+      defaultSetting.title = '查看角色';
       defaultSetting.children = (
         <ViewBody {...{ row, option: defaultSetting }} />
       );
@@ -47,7 +47,7 @@ export const GetCloumn = (
     setIsOpen(true);
   };
   // 表格改变用户状态事件
-  const handleChange = (checked: boolean, row: User.UserInfo) => {
+  const handleChange = (checked: boolean, row: Role.RoleInfo) => {
     setSwitchLoad(true);
     console.log(checked, '=====');
     // row.status = +checked;
@@ -58,30 +58,40 @@ export const GetCloumn = (
     {
       title: '序号',
       dataIndex: 'index',
-      render: (text: string, record: User.UserInfo, index) => (
+      render: (text: string, record: Role.RoleInfo, index) => (
         <span>{index + 1}</span>
       ),
     },
     {
-      title: '用户名称',
-      dataIndex: 'username',
+      title: '角色名称',
+      dataIndex: 'role_name',
     },
     {
       title: '创建日期',
       dataIndex: 'create_time',
-      render: (text: string, record: User.UserInfo, index) =>
+      render: (text: string, record: Role.RoleInfo, index) =>
         CommonUtil.formatDateTime(text, 'YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '更新日期',
       dataIndex: 'update_time',
-      render: (text: string, record: User.UserInfo, index) =>
+      render: (text: string, record: Role.RoleInfo, index) =>
         CommonUtil.formatDateTime(text, 'YYYY-MM-DD HH:mm:ss'),
     },
     {
-      title: '用户状态',
+      title: '操作人',
+      dataIndex: 'action_id',
+    },
+    {
+      title: '操作日期',
+      dataIndex: 'action_time',
+      render: (text: string, record: Role.RoleInfo, index) =>
+        CommonUtil.formatDateTime(text, 'YYYY-MM-DD HH:mm:ss'),
+    },
+    {
+      title: '角色状态',
       dataIndex: 'status',
-      render: (text: string, record: User.UserInfo, index: number) => {
+      render: (text: string, record: Role.RoleInfo, index: number) => {
         setIsChecked(+text);
         return (
           <Switch
@@ -101,7 +111,7 @@ export const GetCloumn = (
     {
       title: '操作',
       key: 'action',
-      render: (text: string, record: User.UserInfo, index: number) => (
+      render: (text: string, record: Role.RoleInfo, index: number) => (
         <Space>
           <Tooltip title='查看'>
             <Button
@@ -129,5 +139,5 @@ export const GetCloumn = (
         </Space>
       ),
     },
-  ] as ColumnsType<User.UserInfo>;
+  ] as ColumnsType<Role.RoleInfo>;
 };

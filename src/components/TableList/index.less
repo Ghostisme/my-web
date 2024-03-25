@@ -1,8 +1,48 @@
-.card-table{
+.card-table {
     // margin: 20px;
-    margin: 20px 0;
+    // margin: 20px 0;
+    height: calc(100% - 102px);
+
+    .btn-body {
+        width: 100%;
+        padding: 20px 20px 0px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .ant-card-body {
+        padding: 0;
+        height: 100%;
+    }
 }
 
-// .table-container{
-//     padding: 20px;
-// }
+.table-container {
+    padding: 20px;
+    height: 100%;
+
+    .ant-spin-nested-loading,
+    .ant-spin-container,
+    .ant-table-container {
+        height: 100%;
+    }
+
+    .ant-table-container {
+        .ant-table-tbody {
+            tr {
+                td {
+                    height: 54px;
+                    padding: 12px;
+                }
+            }
+        }
+    }
+
+    .ant-table {
+        height: calc(100% - 32px);
+    }
+
+    .ant-pagination {
+        margin: 0;
+    }
+}

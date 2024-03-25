@@ -1,4 +1,4 @@
-import type User from '@/apis/user/index.d';
+import type Role from '@/apis/role/index.d';
 export type BtnType = 'create' | 'view' | 'update' | 'del';
 export type ModalSetting = {
   type: BtnType;
@@ -14,6 +14,6 @@ export interface DataType {
 }
 
 export interface ModalPropsType {
-  row: User.UserInfo;
+  row: Role.RoleInfo;
   option: ModalSetting;
 }

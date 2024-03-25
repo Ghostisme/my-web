@@ -5,16 +5,16 @@ const isLogin = () => {
   return !!localStorage.getItem(TOKEN_KEY);
 };
 
-const getToken = () => {
-  return localStorage.getItem(TOKEN_KEY);
+const getCache = (key: string) => {
+  return localStorage.getItem(key);
 };
 
-const setToken = (token: string) => {
-  localStorage.setItem(TOKEN_KEY, token);
+const setCache = (key: string, value: string) => {
+  localStorage.setItem(key, value);
 };
 
-const clearToken = () => {
-  localStorage.removeItem(TOKEN_KEY);
+const clearCache = (key: string) => {
+  localStorage.removeItem(key);
 };
 
-export { isLogin, getToken, setToken, clearToken };
+export { isLogin, getCache, setCache, clearCache };

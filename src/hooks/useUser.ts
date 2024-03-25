@@ -1,12 +1,14 @@
 import { useState, useContext, createContext, useReducer } from 'react';
 import { notification } from 'antd';
 import { getToken, removeToken, setToken } from '@/utils/cache/cookies';
+import { setCache } from '@/utils';
 import { createAesKey, aesEncrypt, aesDecrypt } from '@/utils/crypto';
 import Api from '@/apis';
 import type Login from '@/apis/login/index.d';
 
 const useUserHook = () => {
   const [auth, setAuth] = useState({
+    userId: 0,
     isLogin: false,
     admin: false,
     username: '',
@@ -27,11 +29,13 @@ const useUserHook = () => {
       });
       setToken(res.token);
       setAuth({
+        userId: res.user.id,
         isLogin: true,
         admin: res.user.role.role === 'admin',
         username: res.user.username,
         role: res.user.role.role,
       });
+      setCache('userInfo', JSON.stringify(auth));
       console.log(auth, '接口');
       return res;
     }
@@ -41,6 +45,7 @@ const useUserHook = () => {
     console.log(res, '登出');
     if (!res) {
       setAuth({
+        userId: 0,
         isLogin: false,
         admin: false,
         username: '',

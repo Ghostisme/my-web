@@ -34,6 +34,9 @@ const UserComp: React.FC = () => {
   const [tableLoading, setTableLoading] = useState(false);
   const [data, setData] = useState<User.UserInfo[]>([]);
   const [error, setError] = useState(null);
+  // 列表滑块按钮
+  const [switchLoad, setSwitchLoad] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
   // 弹窗
   const [isOpen, setIsOpen] = useState(false);
   const [modelSetting, setModalSetting] = useState({});
@@ -72,14 +75,24 @@ const UserComp: React.FC = () => {
     };
     fetchData();
   }, []);
-
+  useEffect(() => {
+    console.log('改变了');
+  }, [isChecked]);
   return (
     <div className='container'>
       {/* 查询项 */}
       <TableSearch list={searchList} />
       {/* 表格项 */}
       <TableList
-        columns={GetCloumn(isOpen, setModalSetting, setIsOpen)}
+        columns={GetCloumn(
+          isOpen,
+          switchLoad,
+          isChecked,
+          setModalSetting,
+          setIsOpen,
+          setSwitchLoad,
+          setIsChecked
+        )}
         dataSource={data}
         loading={tableLoading}
       />

@@ -19,11 +19,11 @@
 
 export const statusList = [
   {
-    title: '无效',
+    title: '禁用',
     value: 0,
   },
   {
-    title: '有效',
+    title: '启用',
     value: 1,
   },
 ];

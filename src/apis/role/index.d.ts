@@ -21,6 +21,15 @@ declare namespace Role {
     operator_id: number;
     status: number;
   };
+
+  export interface UpdateRoleParams {
+    id: number;
+    status?: number;
+    name?: string;
+  }
+  export interface DeleteRoleParams {
+    id: number;
+  }
   // export type Role = {
   //   id: number;
   //   role: string;

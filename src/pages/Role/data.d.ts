@@ -16,4 +16,13 @@ export interface DataType {
 export interface ModalPropsType {
   row: Role.RoleInfo;
   option: ModalSetting;
+  form?: FormInstance<{
+    name: string;
+  }>;
+  newForm?: {
+    id: number;
+    status: number;
+    name: string;
+  };
+  setNewForm?: Function;
 }

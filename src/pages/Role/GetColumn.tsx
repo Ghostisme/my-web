@@ -1,4 +1,11 @@
-import { Space, Button, Tooltip, Popconfirm, Switch } from 'antd';
+import {
+  Space,
+  Button,
+  Tooltip,
+  Popconfirm,
+  Switch,
+  type FormInstance,
+} from 'antd';
 import {
   InfoCircleOutlined,
   EditOutlined,
@@ -13,11 +20,16 @@ import type * as DataType from './data.d';
 export const GetCloumn = (
   isOpen: boolean,
   switchLoad: boolean,
-  isChecked: boolean,
   setModalSetting: Function,
   setIsOpen: Function,
-  setSwitchLoad: Function,
-  setIsChecked: Function
+  handleChange: Function,
+  form: FormInstance<any>,
+  newForm: {
+    id: number;
+    status: number;
+    name: string;
+  },
+  setNewForm: Function
 ) => {
   // 表格操作列事件
   const handleClick = (type: DataType.BtnType, row: Role.RoleInfo) => {
@@ -36,9 +48,9 @@ export const GetCloumn = (
       );
     }
     if (type === 'update') {
-      defaultSetting.title = '编辑用户';
+      defaultSetting.title = '编辑角色';
       defaultSetting.children = (
-        <UpdateBody {...{ row, option: defaultSetting }} />
+        <UpdateBody {...{ row, option: defaultSetting, newForm, setNewForm }} />
       );
     }
     if (type === 'create') {
@@ -47,13 +59,13 @@ export const GetCloumn = (
     setIsOpen(true);
   };
   // 表格改变用户状态事件
-  const handleChange = (checked: boolean, row: Role.RoleInfo) => {
-    setSwitchLoad(true);
-    console.log(checked, '=====');
-    // row.status = +checked;
-    setIsChecked(checked);
-    setSwitchLoad(false);
-  };
+  // const handleChange = (checked: boolean, row: Role.RoleInfo) => {
+  //   setSwitchLoad(true);
+  //   console.log(checked, '=====');
+  //   // row.status = +checked;
+  //   setIsChecked(checked);
+  //   setSwitchLoad(false);
+  // };
   return [
     {
       title: '序号',
@@ -92,7 +104,7 @@ export const GetCloumn = (
       title: '角色状态',
       dataIndex: 'status',
       render: (text: string, record: Role.RoleInfo, index: number) => {
-        setIsChecked(+text);
+        // handleChange(+text, record);
         return (
           <Switch
             checkedChildren={statusList.map((item) =>
@@ -101,7 +113,7 @@ export const GetCloumn = (
             unCheckedChildren={statusList.map((item) =>
               item.value === +text ? item.title : ''
             )}
-            checked={isChecked}
+            checked={+text === 1}
             loading={switchLoad}
             onChange={(val) => handleChange(val, record)}
           />

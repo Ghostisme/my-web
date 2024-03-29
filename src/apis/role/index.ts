@@ -8,3 +8,19 @@ export const roleList = (params: Role.RoleListParams) => {
     data: params,
   });
 };
+
+export const updateRole = (params: Role.UpdateRoleParams) => {
+  return request<null>({
+    method: 'put',
+    url: '/api/v1/role',
+    data: params,
+  });
+};
+
+export const delRole = (params: Role.DeleteRoleParams) => {
+  return request<null>({
+    method: 'delete',
+    url: '/api/v1/role',
+    data: params,
+  });
+};

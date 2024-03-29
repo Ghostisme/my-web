@@ -8,13 +8,19 @@ function TableList(
     TableProps<any> & { children?: React.ReactNode } & {
       ref?: React.Ref<HTMLDivElement> | undefined;
       isShow?: boolean;
+      handleClick?: Function;
     }
 ) {
   return (
     <Card className='card-table'>
       {props.isShow && (
         <div className='btn-body'>
-          <Button>新增</Button>
+          <Button
+            type='primary'
+            onClick={() => props.handleClick && props.handleClick()}
+          >
+            新增
+          </Button>
         </div>
       )}
       <Table className='table-container' {...props}></Table>

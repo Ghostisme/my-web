@@ -11,7 +11,7 @@ const UpdateBody = (props: DataType.ModalPropsType) => {
     //   status: props.row.status,
     //   name: inputVal
     // });
-    setVal(props.row.role_name);
+    props.row && setVal(props.row.role_name);
     // props.form.setFields([
     //   {
     //     name: 'id',
@@ -33,6 +33,7 @@ const UpdateBody = (props: DataType.ModalPropsType) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setVal(e.target.value);
     props.setNewForm &&
+      props.row &&
       props.setNewForm({
         id: props.row.id,
         status: props.row.status,

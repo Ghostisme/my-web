@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
-import { Card, Col, Form, Row, Input, Select, DatePicker, Button } from "antd";
-import { newZhCn, newEnUS } from "@/utils/local";
-import type { Props, StatusList } from "./data.d";
-import "./index.less";
+import React, { useContext } from 'react';
+import { Card, Col, Form, Row, Input, Select, DatePicker, Button } from 'antd';
+import { newZhCn, newEnUS } from '@/utils/local';
+import type { Props, StatusList } from './data.d';
+import './index.less';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -10,9 +10,9 @@ const { RangePicker } = DatePicker;
 const getItem = (item: { type: string; optionsList?: StatusList[] }) => {
   // const configContext = useContext(ConfigContext);
   // console.log(configContext.getPrefixCls(), "configContext");
-  if (item.type === "input") {
+  if (item.type === 'input') {
     return <Input {...item} />;
-  } else if (item.type === "select") {
+  } else if (item.type === 'select') {
     return (
       <Select {...item}>
         {item.optionsList?.map(
@@ -36,34 +36,29 @@ const getItem = (item: { type: string; optionsList?: StatusList[] }) => {
         )}
       </Select>
     );
-  } else if (item.type === "dateTime") {
-    return <RangePicker className="date-picker" format={"YYYY/MM/DD"} />;
+  } else if (item.type === 'dateTime') {
+    return <RangePicker className='date-picker' format={'YYYY/MM/DD'} />;
   }
 };
 
 const TableSearch: React.FC<Props> = (props) => {
   // console.log(props, "tableSearch");
   return (
-    <Card className="card-search">
-      <Form>
+    <Card className='card-search'>
+      <Form form={props.search} onFinish={props.onSearch()}>
         <Row gutter={24}>
           {props?.list.map((item, index) => (
             <Col key={index} span={24 / (props.list.length + 1)}>
-              <Form.Item className="search-item" key={index}>
+              <Form.Item className='search-item' key={index} name={item.key}>
                 {getItem(item)}
               </Form.Item>
             </Col>
           ))}
           <Col span={6}>
-            <Button type="primary" htmlType="submit">
+            <Button type='primary' htmlType='submit'>
               {newZhCn.other.searchSubmit}
             </Button>
-            <Button
-              style={{ margin: "0 8px" }}
-              onClick={() => {
-                // form.resetFields();
-              }}
-            >
+            <Button style={{ margin: '0 8px' }} onClick={props.onReset()}>
               {newZhCn.other.searchReset}
             </Button>
           </Col>

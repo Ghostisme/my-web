@@ -23,13 +23,13 @@ export const GetCloumn = (
   setModalSetting: Function,
   setIsOpen: Function,
   handleChange: Function,
-  form: FormInstance<any>,
   newForm: {
     id: number;
     status: number;
     name: string;
   },
-  setNewForm: Function
+  setNewForm: Function,
+  handleDelClick: Function
 ) => {
   // 表格操作列事件
   const handleClick = (type: DataType.BtnType, row: Role.RoleInfo) => {
@@ -46,17 +46,21 @@ export const GetCloumn = (
       defaultSetting.children = (
         <ViewBody {...{ row, option: defaultSetting }} />
       );
+      setModalSetting(defaultSetting);
+      setIsOpen(true);
     }
     if (type === 'update') {
       defaultSetting.title = '编辑角色';
       defaultSetting.children = (
         <UpdateBody {...{ row, option: defaultSetting, newForm, setNewForm }} />
       );
+      setModalSetting(defaultSetting);
+      setIsOpen(true);
     }
-    if (type === 'create') {
+    if (type === 'del') {
+      defaultSetting.title = '删除角色';
+      handleDelClick(row);
     }
-    setModalSetting(defaultSetting);
-    setIsOpen(true);
   };
   // 表格改变用户状态事件
   // const handleChange = (checked: boolean, row: Role.RoleInfo) => {
@@ -141,7 +145,10 @@ export const GetCloumn = (
               onClick={() => handleClick('update', record)}
             ></Button>
           </Tooltip>
-          <Popconfirm title='你确定要删除此条数据？'>
+          <Popconfirm
+            title='你确定要删除此条数据？'
+            onConfirm={() => handleClick('del', record)}
+          >
             <Button
               type='text'
               shape='circle'

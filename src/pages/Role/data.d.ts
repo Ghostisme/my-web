@@ -1,3 +1,4 @@
+import type { ModalProps } from 'antd';
 import type Role from '@/apis/role/index.d';
 export type BtnType = 'create' | 'view' | 'update' | 'del';
 export type ModalSetting = {
@@ -14,10 +15,12 @@ export interface DataType {
 }
 
 export interface ModalPropsType {
-  row: Role.RoleInfo;
+  row?: Role.RoleInfo;
   option: ModalSetting;
   form?: FormInstance<{
     name: string;
+    is_admin: number;
+    status: number;
   }>;
   newForm?: {
     id: number;

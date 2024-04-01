@@ -3,12 +3,14 @@ import { Form, notification } from 'antd';
 import TableSearch from '@/components/TableSearch';
 import TableList from '@/components/TableList';
 import AlertComp from '@/components/AlertComp';
-
+import CreateBody from './CreateBody';
 import Api from '@/apis';
 import { statusList } from './_mock';
-import type Role from '@/apis/role/index.d';
-import './index.less';
 import { GetCloumn } from './GetColumn';
+import type ApiType from '@/apis/role/index.d';
+import type Role from '@/apis/role/index.d';
+import type * as DataType from './data.d';
+import './index.less';
 const searchList = [
   {
     name: 'keyWord',
@@ -31,6 +33,26 @@ const searchList = [
 const RoleComp = () => {
   // 是否是新增点击
   // const [isCreate, setIsCreate] = useState(false)
+  // 查询选项处理
+  const [search, setSearchForm] = useState({
+    beginTime: '',
+    endTime: '',
+    keyWord: '',
+    status: undefined,
+    page: 1,
+    pageSize: 10,
+  });
+  const [searchForm] = Form.useForm();
+  // 查询
+  const onSearch = () => {
+    console.log(searchForm.getFieldsValue(), 'searchForm.getFieldsValue()');
+
+    const res = {} as ApiType.RoleListParams;
+    // Object.assign(res, search, searchForm.getFieldsValue())
+    // setSearchForm(res)
+  };
+  // 重置
+  const onReset = () => {};
   // 列表数据处理
   const [tableLoading, setTableLoading] = useState(false);
   const [data, setData] = useState<Role.RoleInfo[]>([]);
@@ -39,8 +61,10 @@ const RoleComp = () => {
   const [switchLoad, setSwitchLoad] = useState(false);
   // 弹窗
   const [isOpen, setIsOpen] = useState(false);
-  const [modelSetting, setModalSetting] = useState({});
-  // 弹窗表单
+  const [modelSetting, setModalSetting] = useState<DataType.ModalSetting>(
+    {} as DataType.ModalSetting
+  );
+  // 弹窗表单（编辑，查看）
   const [form] = Form.useForm();
   const [newForm, setNewForm] = useState(
     {} as {
@@ -52,18 +76,35 @@ const RoleComp = () => {
   // 弹窗关闭事件
   const handleOk = async () => {
     // console.log(form.getFieldsValue());
-    try {
-      const res = await Api.updateRole(newForm);
+    if (modelSetting.type !== 'create') {
+      try {
+        const res = await Api.updateRole(newForm);
+        if (!res) {
+          notification.success({
+            message: '更新成功',
+            closeIcon: false,
+          });
+          setIsOpen(false);
+          fetchData();
+        }
+      } catch (error) {
+        setIsOpen(false);
+      }
+    } else {
+      // 新增
+      const params = form.getFieldsValue();
+      const res = await Api.createRole(params);
       if (!res) {
+        setIsOpen(false);
         notification.success({
-          message: '更新成功',
+          message: '创建成功',
           closeIcon: false,
         });
-        setIsOpen(false);
         fetchData();
       }
-    } catch (error) {
-      setIsOpen(false);
+      // form.validateFields().then((res) => {
+
+      // })
     }
   };
   const handleCancel = () => {
@@ -78,17 +119,8 @@ const RoleComp = () => {
   };
   const fetchData = async () => {
     setTableLoading(true);
-    const params = {
-      // beginTime: '',
-      // endTime: '',
-      // keyWord: '',
-      // status: null,
-      page: 1,
-      pageSize: 10,
-    };
-
     try {
-      const res = await Api.roleList(params);
+      const res = await Api.roleList(search);
       if (res) {
         console.log(res, '用户列表数据');
         setData(res.list);
@@ -124,19 +156,41 @@ const RoleComp = () => {
   };
   // 新增点击
   const handleClick = () => {
-    setModalSetting({
-      title: '新增角色',
+    const defaultSetting: DataType.ModalSetting = {
+      title: '',
       centered: true,
       open: isOpen,
       cancelText: '取消',
       okText: '确定',
-      type,
-    });
+      type: 'create',
+    };
+    defaultSetting.title = '新增角色';
+    defaultSetting.children = (
+      <CreateBody {...{ option: defaultSetting, newForm, setNewForm, form }} />
+    );
+    setModalSetting(defaultSetting);
+    setIsOpen(true);
+  };
+  // 删除点击执行接口
+  const handleDelClick = async (row: Role.RoleInfo) => {
+    const params = {
+      id: row.id,
+    };
+    const res = await Api.delRole(params);
+    console.log(res, '===');
+    if (!res) {
+      fetchData();
+    }
   };
   return (
     <div className='container'>
       {/* 查询项 */}
-      <TableSearch list={searchList} />
+      <TableSearch
+        list={searchList}
+        search={searchForm}
+        onSearch={onSearch}
+        onReset={onReset}
+      />
       {/* 表格项 */}
       <TableList
         columns={GetCloumn(
@@ -145,9 +199,9 @@ const RoleComp = () => {
           setModalSetting,
           setIsOpen,
           handleChange,
-          form,
           newForm,
-          setNewForm
+          setNewForm,
+          handleDelClick
         )}
         dataSource={data}
         loading={tableLoading}

@@ -22,6 +22,16 @@ declare namespace Role {
     status: number;
   };
 
+  export interface CreateRoleParams {
+    is_admin: number;
+    status: number;
+    name: string;
+  }
+
+  export interface CreateRoleResponse {
+    id: number;
+  }
+
   export interface UpdateRoleParams {
     id: number;
     status?: number;

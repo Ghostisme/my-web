@@ -9,6 +9,14 @@ export const roleList = (params: Role.RoleListParams) => {
   });
 };
 
+export const createRole = (params: Role.CreateRoleParams) => {
+  return request<Role.CreateRoleResponse>({
+    method: 'post',
+    url: '/api/v1/role/save',
+    data: params,
+  });
+};
+
 export const updateRole = (params: Role.UpdateRoleParams) => {
   return request<null>({
     method: 'put',

@@ -1,4 +1,11 @@
-import { Space, Button, Tooltip, Popconfirm, Switch } from 'antd';
+import {
+  Space,
+  Button,
+  Tooltip,
+  Popconfirm,
+  Switch,
+  type FormInstance,
+} from 'antd';
 import {
   InfoCircleOutlined,
   EditOutlined,
@@ -13,11 +20,16 @@ import type * as DataType from './data.d';
 export const GetCloumn = (
   isOpen: boolean,
   switchLoad: boolean,
-  isChecked: boolean,
   setModalSetting: Function,
   setIsOpen: Function,
-  setSwitchLoad: Function,
-  setIsChecked: Function
+  handleChange: Function,
+  newForm: {
+    id: number;
+    status: number;
+    name: string;
+  },
+  setNewForm: Function,
+  handleDelClick: Function
 ) => {
   // 表格操作列事件
   const handleClick = (type: DataType.BtnType, row: User.UserInfo) => {
@@ -34,26 +46,30 @@ export const GetCloumn = (
       defaultSetting.children = (
         <ViewBody {...{ row, option: defaultSetting }} />
       );
+      setModalSetting(defaultSetting);
+      setIsOpen(true);
     }
     if (type === 'update') {
       defaultSetting.title = '编辑用户';
       defaultSetting.children = (
-        <UpdateBody {...{ row, option: defaultSetting }} />
+        <UpdateBody {...{ row, option: defaultSetting, newForm, setNewForm }} />
       );
+      setModalSetting(defaultSetting);
+      setIsOpen(true);
     }
-    if (type === 'create') {
+    if (type === 'del') {
+      defaultSetting.title = '删除用户';
+      handleDelClick(row);
     }
-    setModalSetting(defaultSetting);
-    setIsOpen(true);
   };
   // 表格改变用户状态事件
-  const handleChange = (checked: boolean, row: User.UserInfo) => {
-    setSwitchLoad(true);
-    console.log(checked, '=====');
-    // row.status = +checked;
-    setIsChecked(checked);
-    setSwitchLoad(false);
-  };
+  // const handleChange = (checked: boolean, row: Role.RoleInfo) => {
+  //   setSwitchLoad(true);
+  //   console.log(checked, '=====');
+  //   // row.status = +checked;
+  //   setIsChecked(checked);
+  //   setSwitchLoad(false);
+  // };
   return [
     {
       title: '序号',
@@ -65,6 +81,20 @@ export const GetCloumn = (
     {
       title: '用户名称',
       dataIndex: 'username',
+    },
+    {
+      title: '地区',
+      dataIndex: 'addr',
+    },
+    {
+      title: '邮箱',
+      dataIndex: 'email',
+    },
+    {
+      title: '联系方式',
+      dataIndex: 'mobile',
+      // render: (text: string, record: User.UserInfo, index) =>
+      //   CommonUtil.formatDateTime(text, 'YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '创建日期',
@@ -82,7 +112,7 @@ export const GetCloumn = (
       title: '用户状态',
       dataIndex: 'status',
       render: (text: string, record: User.UserInfo, index: number) => {
-        setIsChecked(+text);
+        // handleChange(+text, record);
         return (
           <Switch
             checkedChildren={statusList.map((item) =>
@@ -91,7 +121,7 @@ export const GetCloumn = (
             unCheckedChildren={statusList.map((item) =>
               item.value === +text ? item.title : ''
             )}
-            checked={isChecked}
+            checked={+text === 1}
             loading={switchLoad}
             onChange={(val) => handleChange(val, record)}
           />
@@ -119,7 +149,10 @@ export const GetCloumn = (
               onClick={() => handleClick('update', record)}
             ></Button>
           </Tooltip>
-          <Popconfirm title='你确定要删除此条数据？'>
+          <Popconfirm
+            title='你确定要删除此条数据？'
+            onConfirm={() => handleClick('del', record)}
+          >
             <Button
               type='text'
               shape='circle'

@@ -45,11 +45,11 @@ const TableSearch: React.FC<Props> = (props) => {
   // console.log(props, "tableSearch");
   return (
     <Card className='card-search'>
-      <Form form={props.search} onFinish={props.onSearch()}>
+      <Form form={props.search} onFinish={props.onSearch}>
         <Row gutter={24}>
           {props?.list.map((item, index) => (
             <Col key={index} span={24 / (props.list.length + 1)}>
-              <Form.Item className='search-item' key={index} name={item.key}>
+              <Form.Item className='search-item' key={index} name={item.name}>
                 {getItem(item)}
               </Form.Item>
             </Col>
@@ -58,7 +58,7 @@ const TableSearch: React.FC<Props> = (props) => {
             <Button type='primary' htmlType='submit'>
               {newZhCn.other.searchSubmit}
             </Button>
-            <Button style={{ margin: '0 8px' }} onClick={props.onReset()}>
+            <Button style={{ margin: '0 8px' }} onClick={props.onReset}>
               {newZhCn.other.searchReset}
             </Button>
           </Col>

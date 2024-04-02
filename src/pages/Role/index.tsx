@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form, notification } from 'antd';
+import dayjs from 'dayjs';
 import TableSearch from '@/components/TableSearch';
 import TableList from '@/components/TableList';
 import AlertComp from '@/components/AlertComp';
@@ -31,28 +32,34 @@ const searchList = [
   },
 ];
 const RoleComp = () => {
-  // 是否是新增点击
-  // const [isCreate, setIsCreate] = useState(false)
   // 查询选项处理
-  const [search, setSearchForm] = useState({
-    beginTime: '',
-    endTime: '',
-    keyWord: '',
-    status: undefined,
+  const [search, setSearchForm] = useState<ApiType.RoleListParams>({
     page: 1,
     pageSize: 10,
   });
   const [searchForm] = Form.useForm();
   // 查询
-  const onSearch = () => {
-    console.log(searchForm.getFieldsValue(), 'searchForm.getFieldsValue()');
-
-    const res = {} as ApiType.RoleListParams;
-    // Object.assign(res, search, searchForm.getFieldsValue())
-    // setSearchForm(res)
+  const onSearch = async (values: any) => {
+    const { createTime, ...newValues } = values;
+    const params = {} as ApiType.RoleListParams;
+    Object.assign(params, search, newValues);
+    if (createTime) {
+      params.beginTime = dayjs(createTime[0]).format('YYYY-MM-DD HH:mm:ss');
+      params.endTime = dayjs(createTime[1]).format('YYYY-MM-DD HH:mm:ss');
+    }
+    setSearchForm(params);
   };
   // 重置
-  const onReset = () => {};
+  const onReset = () => {
+    searchForm.resetFields();
+    const initData = {
+      page: 1,
+      pageSize: 10,
+    };
+    const params = {} as ApiType.RoleListParams;
+    Object.assign(params, initData);
+    setSearchForm(params);
+  };
   // 列表数据处理
   const [tableLoading, setTableLoading] = useState(false);
   const [data, setData] = useState<Role.RoleInfo[]>([]);
@@ -135,7 +142,7 @@ const RoleComp = () => {
   };
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [search.beginTime, search.keyWord, search.status]);
   // 列表滑块切换操作
   const handleChange = async (checked: boolean, row: Role.RoleInfo) => {
     setSwitchLoad(true);

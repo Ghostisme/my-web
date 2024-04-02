@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { Form, notification } from 'antd';
+import dayjs from 'dayjs';
 import TableSearch from '@/components/TableSearch';
 import TableList from '@/components/TableList';
 import AlertComp from '@/components/AlertComp';
-
+import CreateBody from './CreateBody';
 import Api from '@/apis';
 import { statusList } from './_mock';
-import type User from '@/apis/user/index.d';
-import './index.less';
 import { GetCloumn } from './GetColumn';
-
+import type ApiType from '@/apis/user/index.d';
+import type User from '@/apis/user/index.d';
+import type * as DataType from './data.d';
+import './index.less';
 const searchList = [
   {
     name: 'keyWord',
@@ -28,78 +31,196 @@ const searchList = [
     type: 'dateTime',
   },
 ];
-
-const UserComp: React.FC = () => {
+const RoleComp = () => {
+  // 查询选项处理
+  const [search, setSearchForm] = useState<ApiType.UserListParams>({
+    page: 1,
+    pageSize: 10,
+  });
+  const [searchForm] = Form.useForm();
+  // 查询
+  const onSearch = async (values: any) => {
+    const { createTime, ...newValues } = values;
+    const params = {} as ApiType.UserListParams;
+    Object.assign(params, search, newValues);
+    if (createTime) {
+      params.beginTime = dayjs(createTime[0]).format('YYYY-MM-DD HH:mm:ss');
+      params.endTime = dayjs(createTime[1]).format('YYYY-MM-DD HH:mm:ss');
+    }
+    setSearchForm(params);
+  };
+  // 重置
+  const onReset = () => {
+    searchForm.resetFields();
+    const initData = {
+      page: 1,
+      pageSize: 10,
+    };
+    const params = {} as ApiType.UserListParams;
+    Object.assign(params, initData);
+    setSearchForm(params);
+  };
   // 列表数据处理
   const [tableLoading, setTableLoading] = useState(false);
   const [data, setData] = useState<User.UserInfo[]>([]);
   const [error, setError] = useState(null);
   // 列表滑块按钮
   const [switchLoad, setSwitchLoad] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
   // 弹窗
   const [isOpen, setIsOpen] = useState(false);
-  const [modelSetting, setModalSetting] = useState({});
+  const [modelSetting, setModalSetting] = useState<DataType.ModalSetting>(
+    {} as DataType.ModalSetting
+  );
+  // 弹窗表单（编辑，查看）
+  const [form] = Form.useForm();
+  const [newForm, setNewForm] = useState(
+    {} as {
+      id: number;
+      status: number;
+      name: string;
+    }
+  );
   // 弹窗关闭事件
-  const handleOk = () => {
-    setIsOpen(false);
-  };
-  const handleCancel = () => {
-    setIsOpen(false);
-  };
-  useEffect(() => {
-    const fetchData = async () => {
-      setTableLoading(true);
-      const params = {
-        // beginTime: '',
-        // endTime: '',
-        // keyWord: '',
-        // status: null,
-        page: 1,
-        pageSize: 10,
-      };
-
+  const handleOk = async () => {
+    // console.log(form.getFieldsValue());
+    if (modelSetting.type !== 'create') {
       try {
-        const res = await Api.userList(params);
-        if (res) {
-          console.log(res, '用户列表数据');
-          setData(res.list);
-          setTableLoading(false);
+        const res = await Api.updateRole(newForm);
+        if (!res) {
+          notification.success({
+            message: '更新成功',
+            closeIcon: false,
+          });
+          setIsOpen(false);
+          fetchData();
         }
       } catch (error) {
-        // setError(error);
-        console.log(error);
-      } finally {
+        setIsOpen(false);
+      }
+    } else {
+      // 新增
+      const params = form.getFieldsValue();
+      const res = await Api.createRole(params);
+      if (!res) {
+        setIsOpen(false);
+        notification.success({
+          message: '创建成功',
+          closeIcon: false,
+        });
+        fetchData();
+      }
+      // form.validateFields().then((res) => {
+
+      // })
+    }
+  };
+  const handleCancel = () => {
+    setNewForm(
+      {} as {
+        id: number;
+        status: number;
+        name: string;
+      }
+    );
+    setIsOpen(false);
+  };
+  const fetchData = async () => {
+    setTableLoading(true);
+    try {
+      const res = await Api.userList(search);
+      if (res) {
+        console.log(res, '用户列表数据');
+        setData(res.list);
         setTableLoading(false);
       }
-    };
-    fetchData();
-  }, []);
+    } catch (error) {
+      // setError(error);
+      console.log(error);
+    } finally {
+      setTableLoading(false);
+    }
+  };
   useEffect(() => {
-    console.log('改变了');
-  }, [isChecked]);
+    fetchData();
+  }, [search.beginTime, search.keyWord, search.status]);
+  // 列表滑块切换操作
+  const handleChange = async (checked: boolean, row: User.UserInfo) => {
+    setSwitchLoad(true);
+    try {
+      const params = {
+        id: row.id,
+        name: row.username,
+        status: +checked,
+      };
+      const res = await Api.updateRole(params);
+      if (!res) {
+        fetchData();
+      }
+      setSwitchLoad(false);
+    } catch (error) {
+      setSwitchLoad(false);
+    }
+  };
+  // 新增点击
+  const handleClick = () => {
+    const defaultSetting: DataType.ModalSetting = {
+      title: '',
+      centered: true,
+      open: isOpen,
+      cancelText: '取消',
+      okText: '确定',
+      type: 'create',
+    };
+    defaultSetting.title = '新增角色';
+    defaultSetting.children = (
+      <CreateBody {...{ option: defaultSetting, newForm, setNewForm, form }} />
+    );
+    setModalSetting(defaultSetting);
+    setIsOpen(true);
+  };
+  // 删除点击执行接口
+  const handleDelClick = async (row: User.UserInfo) => {
+    const params = {
+      id: row.id,
+    };
+    const res = await Api.delRole(params);
+    console.log(res, '===');
+    if (!res) {
+      fetchData();
+    }
+  };
   return (
     <div className='container'>
       {/* 查询项 */}
-      <TableSearch list={searchList} />
+      <TableSearch
+        list={searchList}
+        search={searchForm}
+        onSearch={onSearch}
+        onReset={onReset}
+      />
       {/* 表格项 */}
       <TableList
         columns={GetCloumn(
           isOpen,
           switchLoad,
-          isChecked,
           setModalSetting,
           setIsOpen,
-          setSwitchLoad,
-          setIsChecked
+          handleChange,
+          newForm,
+          setNewForm,
+          handleDelClick
         )}
         dataSource={data}
         loading={tableLoading}
+        isShow
+        handleClick={handleClick}
       />
       {/* 操作弹窗 */}
       <AlertComp {...{ isOpen, handleOk, handleCancel, ...modelSetting }} />
+      {/* 新增弹窗 */}
+      {/* <AlertComp /> */}
     </div>
   );
 };
 
-export default UserComp;
+export default RoleComp;

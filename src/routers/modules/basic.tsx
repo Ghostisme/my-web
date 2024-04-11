@@ -29,6 +29,11 @@ const routes = [
         name: '登录页',
         component: lazy(() => import('@/pages/Login')),
       },
+      // {
+      //   path: '/register',
+      //   name: '注册页',
+      //   component: lazy(() => import('@/pages/Login/Register')),
+      // },
       {
         path: '',
         component: BasicLayout,

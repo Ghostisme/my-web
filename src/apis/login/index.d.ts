@@ -32,6 +32,13 @@ declare namespace Login {
   export interface LogoutParams {
     token: string;
   }
+  export interface GetCodeParams {
+    mobile: string;
+  }
+  export interface GetCodeResponse {
+    code: string;
+    img: string;
+  }
 }
 
 export = Login;

@@ -12,23 +12,6 @@ const UpdateBody = (props: DataType.ModalPropsType) => {
     //   name: inputVal
     // });
     props.row && setVal(props.row.role_name);
-    // props.form.setFields([
-    //   {
-    //     name: 'id',
-    //     validating: false,
-    //     touched: false,
-    //     value: props.row.id,
-    //   },
-    //   {
-    //     name: 'status',
-    //     validating: false,
-    //     touched: false,
-    //     value: props.row.status,
-    //   },
-    // ]);
-    // props.form.setFieldValue('id', props.row.id);
-    // props.form.setFieldValue('name', props.row.role_name);
-    // props.form.setFieldValue('status', props.row.status);
   }, []);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setVal(e.target.value);

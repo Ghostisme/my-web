@@ -15,3 +15,11 @@ export const logout = () => {
     url: '/api/v1/logout',
   });
 };
+
+export const getCode = (params: Login.GetCodeParams) => {
+  return request<Login.GetCodeResponse>({
+    method: 'post',
+    url: '/api/v1/code',
+    data: params,
+  });
+};

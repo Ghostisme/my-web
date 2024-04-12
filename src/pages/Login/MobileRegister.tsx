@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Modal } from 'antd';
+import { Form, Input, Button, Modal, notification } from 'antd';
 import { useCountDown } from '@/hooks/useCountDown';
 import Api from '@/apis';
 import AlertComp from '@/components/AlertComp';
@@ -7,6 +7,8 @@ import AlertComp from '@/components/AlertComp';
 const MobileRegister = (props: any) => {
   const [form] = Form.useForm();
   const [codeMsg, setCodeMsg] = useState('获取验证码');
+  const [open, setOpen] = useState(false);
+  const [msgCode, setMsgCode] = useState('');
   const { start, count, isdisable } = useCountDown(
     60,
     () => {
@@ -14,17 +16,34 @@ const MobileRegister = (props: any) => {
     },
     () => {
       setCodeMsg('获取验证码');
+      setMsgCode('');
+      setOpen(false);
     }
   );
   const handleClick = async (flag: boolean) => {
     // flag 为false则获取验证码
+    if (form.getFieldValue('mobile') === '') {
+      // notification.error(Object.assign({}, '', { closeIcon: false }));
+      // form
+      //   .validateFields()
+      //   .then((values) => {
+      //     console.log(values, '为false则获取验证码');
+      //   })
+      //   .catch((errInfo) => {
+      //     console.log(errInfo, '====');
+      //   });
+    }
     if (!flag) {
       const params = {
         mobile: '15202270460',
       };
       const res = await Api.getCode(params);
       console.log(res, '获取验证码');
-      start();
+      if (res) {
+        start();
+        setMsgCode(res.code);
+        setOpen(true);
+      }
     }
   };
   return (
@@ -79,7 +98,21 @@ const MobileRegister = (props: any) => {
           </Button>
         </Form.Item>
       </Form>
-      <Modal></Modal>
+      <Modal
+        title=''
+        centered
+        closable={false}
+        width={300}
+        open={open}
+        footer={null}
+        onCancel={() => setOpen(false)}
+      >
+        <div className='code-msg'>
+          【RichSystem】验证码
+          <span style={{ color: '#40a9ff' }}>{msgCode}</span>
+          ，您正在用Rich的后台系统，如非本人操作，请联系Rich本人。请勿在任何短信或邮件链接的页面中输入验证码！
+        </div>
+      </Modal>
     </>
   );
 };

@@ -39,6 +39,31 @@ declare namespace Login {
     code: string;
     img: string;
   }
+  export interface RegisterParams {
+    type: boolean;
+    // username?: string;
+    // password?: string;
+    // mobile?: string;
+    // code?: string;
+  }
+  export interface UserRegister {
+    type: boolean;
+    username: string;
+    password: string;
+  }
+  export interface MobileRegister {
+    type: boolean;
+    mobile: string;
+    code: string;
+  }
+  export interface RegisterParams extends UserRegister, MobileRegister {}
+  // export enum RegisterParams {
+  //   'user' = UserRegister,
+  //   'mobile' = MobileRegister,
+  //   UserRegister = "user",
+  //   MobileRegister = "mobile"
+  //   user = UserRegister,
+  // }
 }
 
 export = Login;

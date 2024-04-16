@@ -7,11 +7,14 @@ import './index.less';
 const { Sider } = Layout;
 
 const renderMenuItem = (items: any[]) => {
-  // console.log(items, '=====');
-  // console.log(
-  //   items.filter((item: { path: any; name: any }) => item.path && item.name),
-  //   'asdada'
-  // );
+  // 获取当前角色权限
+  const local = localStorage.getItem('userInfo');
+  if (local) {
+    const role = JSON.parse(local);
+    if (role.role === 'user') {
+      items = items.filter((it) => it.path !== '/role' && it);
+    }
+  }
   return items
     .filter((item: { path: any; name: any }) => item.path && item.name)
     .map(
@@ -92,7 +95,7 @@ export default function SiderMenu(props: any) {
         <Row justify='start' align='middle' className='main-logo'>
           {/* <Icon type="car" style={{ color: '#13e367' }} /> */}
           <div className='slider-logo'>
-            <RocketTwoTone twoToneColor='#13e367' />
+            <RocketTwoTone twoToneColor='#13e367' rev={undefined} />
             {!collapsed && (
               <span className='app-name'>{globalStore.appTitle}</span>
             )}

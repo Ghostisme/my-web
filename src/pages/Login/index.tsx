@@ -12,6 +12,7 @@ import DefaultRegister from './DefaultRegister';
 import MobileRegister from './MobileRegister';
 import EmailRegister from './EmailRegister';
 import Register from './Register';
+import { setCache, getCache } from '@/utils';
 import type * as DataType from './data.d';
 
 import './index.less';
@@ -22,7 +23,7 @@ export default function index(props: any) {
   const [remember, setRemember] = useState(false);
   const [form] = Form.useForm();
   // 注册登录切换状态值
-  const [activeKey, setActiveKey] = useState('register');
+  const [activeKey, setActiveKey] = useState('login');
   // 已有账号登录
   const handleLogin = () => {
     setActiveKey('login');
@@ -33,13 +34,20 @@ export default function index(props: any) {
       label: '普通注册',
       key: 'default',
       value: 'default',
-      children: <DefaultRegister handleLogin={handleLogin} />,
+      children: (
+        <DefaultRegister
+          handleLogin={handleLogin}
+          setActiveKey={setActiveKey}
+        />
+      ),
     },
     {
       label: '手机号注册',
       key: 'mobile',
       value: 'mobile',
-      children: <MobileRegister handleLogin={handleLogin} />,
+      children: (
+        <MobileRegister handleLogin={handleLogin} setActiveKey={setActiveKey} />
+      ),
     },
     // {
     //   label: '邮箱注册',
@@ -54,6 +62,7 @@ export default function index(props: any) {
   };
   // 登录逻辑
   useEffect(() => {
+    console.log(1111);
     const localLoginInfo = JSON.parse(
       localStorage.getItem('loginInfo') || '{}'
     );
@@ -61,6 +70,7 @@ export default function index(props: any) {
   }, [remember, form]);
   useEffect(() => {
     console.log(props.auth, 'auth');
+    setCache('userInfo', JSON.stringify(props.auth));
     if (props.auth.isLogin) {
       // 登录过
       history.push('/welcome');
@@ -81,15 +91,15 @@ export default function index(props: any) {
     const res = await props.login(params);
     console.log(res, '测试登录接口');
     if (res) {
-      // props.setAuth({
-      //   isLogin: true,
-      //   admin: res.user.role.role === 'admin',
-      //   username: res.user.username,
-      //   role: res.user.role.role,
-      // });
-      // console.log(props.auth, 'auth');
+      props.setAuth({
+        userId: res.user.id,
+        isLogin: true,
+        admin: res.user.role.role === 'admin',
+        username: res.user.username,
+        role: res.user.role.role,
+      });
       // 登录成功
-      // history.push('/welcome');
+      history.push('/welcome');
     }
   };
   return (
@@ -117,7 +127,12 @@ export default function index(props: any) {
               >
                 <Input
                   placeholder='Enter your username'
-                  prefix={<UserOutlined className='site-form-item-icon' />}
+                  prefix={
+                    <UserOutlined
+                      className='site-form-item-icon'
+                      rev={undefined}
+                    />
+                  }
                 />
               </Form.Item>
               <Form.Item
@@ -126,7 +141,12 @@ export default function index(props: any) {
                 rules={[{ required: true, message: '请输入密码!' }]}
               >
                 <Input.Password
-                  prefix={<LockOutlined className='site-form-item-icon' />}
+                  prefix={
+                    <LockOutlined
+                      className='site-form-item-icon'
+                      rev={undefined}
+                    />
+                  }
                   placeholder='Enter your password'
                 />
               </Form.Item>

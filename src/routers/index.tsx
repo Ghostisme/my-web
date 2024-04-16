@@ -10,6 +10,7 @@ import {
 import routes from './modules/basic';
 import LoadingPage from '@/components/LoadingPage';
 import useUserHook from '@/hooks/useUser';
+import { getCache } from '@/utils';
 
 const renderRoutes = (routes: any[], props: any) => {
   // console.log(`output->routes`, routes);
@@ -79,10 +80,17 @@ const renderRoutes = (routes: any[], props: any) => {
 // console.log(renderRoutes(routes), "renderRoutes(routes)");
 const AppRoutes = (props: any) => {
   // console.log(props, 'AppRoutes');
-  const history = useHistory();
+  // const history = useHistory();
   // const location = useLocation();
-  const { auth, login, logout } = useUserHook();
+  // const { auth, login, logout, setAuth } = useUserHook();
+  useEffect(() => {
+    const userInfo = JSON.parse(getCache('userInfo') || '{}');
+    if (userInfo.isLogin) {
+      props.setAuth(userInfo);
+    }
+  }, []);
   // useEffect(() => {
+  //   console.log(222);
   //   if (!auth.isLogin) {
   //     history.push('/login');
   //   }

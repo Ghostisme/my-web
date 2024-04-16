@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Modal, notification } from 'antd';
+import { Form, Input, Button, Modal, notification, Tooltip } from 'antd';
 import { useCountDown } from '@/hooks/useCountDown';
 import Api from '@/apis';
 import AlertComp from '@/components/AlertComp';
+import { InfoCircleOutlined } from '@ant-design/icons';
 
 const MobileRegister = (props: any) => {
   const [form] = Form.useForm();
@@ -22,28 +23,61 @@ const MobileRegister = (props: any) => {
   );
   const handleClick = async (flag: boolean) => {
     // flag 为false则获取验证码
-    if (form.getFieldValue('mobile') === '') {
-      // notification.error(Object.assign({}, '', { closeIcon: false }));
-      // form
-      //   .validateFields()
-      //   .then((values) => {
-      //     console.log(values, '为false则获取验证码');
-      //   })
-      //   .catch((errInfo) => {
-      //     console.log(errInfo, '====');
-      //   });
-    }
+
     if (!flag) {
-      const params = {
-        mobile: '15202270460',
-      };
-      const res = await Api.getCode(params);
-      console.log(res, '获取验证码');
-      if (res) {
-        start();
-        setMsgCode(res.code);
-        setOpen(true);
+      if (form.getFieldValue('mobile') === '') {
+        form.setFields([
+          {
+            name: 'mobile',
+            value: '',
+            errors: ['手机号不能为空！'],
+            touched: true,
+            validating: true,
+          },
+        ]);
+      } else {
+        if (form.getFieldValue('mobile').length === 11) {
+          const params = {
+            mobile: form.getFieldValue('mobile'),
+          };
+          const res = await Api.getCode(params);
+          console.log(res, '获取验证码');
+          if (res) {
+            start();
+            setTimeout(() => {
+              setMsgCode(res.code);
+              setOpen(true);
+            }, 3000);
+          }
+        } else {
+          form.setFields([
+            {
+              name: 'mobile',
+              value: '',
+              errors: ['手机号必须11位！'],
+              touched: true,
+              validating: true,
+            },
+          ]);
+        }
       }
+    }
+  };
+  const handleSubmit = async (values: { mobile: string; code: string }) => {
+    const params = {
+      type: false,
+      ...values,
+    };
+    const res = await Api.register(params);
+    console.log(res, '手机号注册');
+    if (!res) {
+      notification.success({
+        message: '注册成功!',
+        closeIcon: false,
+      });
+      setTimeout(() => {
+        props.setActiveKey('login');
+      }, 3000);
     }
   };
   return (
@@ -56,13 +90,18 @@ const MobileRegister = (props: any) => {
           mobile: '',
           code: '',
         }}
+        onFinish={handleSubmit}
       >
-        <Form.Item
-          label=''
-          name='mobile'
-          rules={[{ required: true, message: '手机号必填!' }]}
-        >
-          <Input placeholder='手机号' className='username-input' />
+        <Form.Item label=''>
+          <Form.Item
+            name='mobile'
+            rules={[{ required: true, message: '手机号必填!' }]}
+          >
+            <Input placeholder='手机号' className='username-input' />
+            <Tooltip title='手机号注册会默认成为用户名，密码默认为123456初始密码，注册成功请尽快更改密码'>
+              <InfoCircleOutlined rev={undefined} />
+            </Tooltip>
+          </Form.Item>
         </Form.Item>
         <Form.Item
           label=''

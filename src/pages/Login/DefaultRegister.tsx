@@ -1,8 +1,45 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, notification } from 'antd';
+import { aesEncrypt } from '@/utils/crypto';
+import Api from '@/apis';
 
 const DefaultRegister = (props: any) => {
   const [form] = Form.useForm();
+  const handleSubmit = async (values: {
+    username: string;
+    password: string;
+    password2: string;
+  }) => {
+    if (values.password === values.password2) {
+      const key = 'qgajvd17wljhaicq';
+      const params = {
+        type: true,
+        username: values.username,
+        password: aesEncrypt(values.password, key),
+      };
+      const res = await Api.register(params);
+      console.log(res, '用户名注册');
+      if (!res) {
+        notification.success({
+          message: '注册成功!',
+          closeIcon: false,
+        });
+        setTimeout(() => {
+          props.setActiveKey('login');
+        }, 3000);
+      }
+    } else {
+      form.setFields([
+        {
+          name: 'password2',
+          value: values.password2,
+          errors: ['两次密码不一致，请重新输入密码！'],
+          touched: true,
+          validating: true,
+        },
+      ]);
+    }
+  };
   return (
     <Form
       className='register-form'
@@ -11,8 +48,8 @@ const DefaultRegister = (props: any) => {
       initialValues={{
         username: '',
         password: '',
-        code: '',
       }}
+      onFinish={handleSubmit}
     >
       <Form.Item
         label='用户名'
@@ -30,7 +67,7 @@ const DefaultRegister = (props: any) => {
       </Form.Item>
       <Form.Item
         label='确认密码'
-        name='password'
+        name='password2'
         rules={[{ required: true, message: '密码必填!' }]}
       >
         <Input.Password placeholder='确认密码' />

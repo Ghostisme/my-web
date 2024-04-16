@@ -10,7 +10,7 @@ export const login = (params: Login.LoginParams) => {
 };
 
 export const logout = () => {
-  return request({
+  return request<null>({
     method: 'get',
     url: '/api/v1/logout',
   });
@@ -22,4 +22,21 @@ export const getCode = (params: Login.GetCodeParams) => {
     url: '/api/v1/code',
     data: params,
   });
+};
+
+export const register = (params: Login.UserRegister | Login.MobileRegister) => {
+  const { type, ...newParams } = params;
+  if (type) {
+    return request<null>({
+      method: 'post',
+      url: '/api/v1/register/user',
+      data: newParams,
+    });
+  } else {
+    return request<null>({
+      method: 'post',
+      url: '/api/v1/register/mobile',
+      data: newParams,
+    });
+  }
 };

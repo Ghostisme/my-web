@@ -137,7 +137,7 @@ export const GetCloumn = (
             <Button
               type='text'
               shape='circle'
-              icon={<InfoCircleOutlined />}
+              icon={<InfoCircleOutlined rev={undefined} />}
               onClick={() => handleClick('view', record)}
             ></Button>
           </Tooltip>
@@ -145,7 +145,7 @@ export const GetCloumn = (
             <Button
               type='text'
               shape='circle'
-              icon={<EditOutlined />}
+              icon={<EditOutlined rev={undefined} />}
               onClick={() => handleClick('update', record)}
             ></Button>
           </Tooltip>
@@ -156,7 +156,7 @@ export const GetCloumn = (
             <Button
               type='text'
               shape='circle'
-              icon={<DeleteOutlined />}
+              icon={<DeleteOutlined rev={undefined} />}
             ></Button>
           </Popconfirm>
         </Space>

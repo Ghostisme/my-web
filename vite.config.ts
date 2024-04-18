@@ -45,7 +45,7 @@ export default defineConfig({
     port: 80,
     proxy: {
       '/api/v1': {
-        target: targetLocal,
+        target: targetCloud,
         ws: true,
         /** 是否允许跨域 */
         changeOrigin: true,

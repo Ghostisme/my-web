@@ -62,14 +62,12 @@ export default function index(props: any) {
   };
   // 登录逻辑
   useEffect(() => {
-    console.log(1111);
     const localLoginInfo = JSON.parse(
       localStorage.getItem('loginInfo') || '{}'
     );
     localLoginInfo.remember && form.setFieldsValue(localLoginInfo);
   }, [remember, form]);
   useEffect(() => {
-    console.log(props.auth, 'auth');
     setCache('userInfo', JSON.stringify(props.auth));
     if (props.auth.isLogin) {
       // 登录过
@@ -77,7 +75,6 @@ export default function index(props: any) {
     }
   }, [props.auth]);
   const handleFinish = async (values: any) => {
-    console.log('Received values of form: ', values);
     const params = {
       ...values,
     };

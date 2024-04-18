@@ -19,9 +19,9 @@ import BlankLayout from '@/layouts/BlankLayout';
 
 const routes = [
   {
-    path: '/',
+    path: '',
     // exact: true,
-    // redirect: "/welcome",
+    // redirect: '/login',
     component: BlankLayout,
     childRoutes: [
       {
@@ -35,7 +35,7 @@ const routes = [
       //   component: lazy(() => import('@/pages/Login/Register')),
       // },
       {
-        path: '',
+        path: '/',
         component: BasicLayout,
         childRoutes: [
           {

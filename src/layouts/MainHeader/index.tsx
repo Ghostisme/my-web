@@ -13,12 +13,12 @@ const menus: MenuProps['items'] = [
   {
     label: '个人信息',
     key: 1,
-    icon: <SmileOutlined />,
+    icon: <SmileOutlined rev={undefined} />,
   },
   {
     label: '退出登录',
     key: 2,
-    icon: <LogoutOutlined />,
+    icon: <LogoutOutlined rev={undefined} />,
   },
 ];
 // const menu = (
@@ -42,7 +42,7 @@ const handleMenuClick = async (e: any, props: any, history: any) => {
   if (e.key === '2') {
     const res = await props.logout();
     if (!res) {
-      history.replace('/login');
+      history.push('/login');
     }
   }
 };

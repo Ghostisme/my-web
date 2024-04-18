@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, ConfigProvider } from 'antd';
 import { useHistory } from 'react-router';
+import { BrowserRouter as Router } from 'react-router-dom';
 import enUS from 'antd/es/locale/en_US';
 import zhCn from 'antd/es/locale/zh_CN';
 import { newZhCn, newEnUS } from './utils/local';
@@ -21,7 +22,6 @@ const App: React.FC = () => {
     }
   };
   // useEffect(() => {
-  //   console.log(222);
   //   if (!useUser.auth.isLogin) {
   //     history.push('/login');
   //   }
@@ -29,7 +29,9 @@ const App: React.FC = () => {
   return (
     <ConfigProvider locale={locale}>
       {/* <Button onClick={handleClick}>点击切换</Button> */}
-      <AppRoutes {...useUser} />
+      <Router>
+        <AppRoutes {...useUser} />
+      </Router>
     </ConfigProvider>
   );
 };

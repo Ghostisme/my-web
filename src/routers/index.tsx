@@ -6,6 +6,7 @@ import {
   Switch,
   useHistory,
   useLocation,
+  withRouter,
 } from 'react-router-dom';
 import routes from './modules/basic';
 import LoadingPage from '@/components/LoadingPage';
@@ -80,13 +81,16 @@ const renderRoutes = (routes: any[], props: any) => {
 // console.log(renderRoutes(routes), "renderRoutes(routes)");
 const AppRoutes = (props: any) => {
   // console.log(props, 'AppRoutes');
-  // const history = useHistory();
+  const history = useHistory();
   // const location = useLocation();
   // const { auth, login, logout, setAuth } = useUserHook();
   useEffect(() => {
     const userInfo = JSON.parse(getCache('userInfo') || '{}');
     if (userInfo.isLogin) {
       props.setAuth(userInfo);
+    }
+    if (!userInfo.isLogin) {
+      history.push('/login');
     }
   }, []);
   // useEffect(() => {
@@ -95,6 +99,6 @@ const AppRoutes = (props: any) => {
   //     history.push('/login');
   //   }
   // }, [auth.isLogin, history]);
-  return <Router>{renderRoutes(routes, props)}</Router>;
+  return <>{renderRoutes(routes, props)}</>;
 };
 export default AppRoutes;

@@ -1,64 +1,73 @@
-import React, { useEffect, useState } from "react";
-import { Space, Button, Tooltip } from "antd";
+import React, { useEffect, useState } from 'react';
+import { Space, Button, Tooltip } from 'antd';
 import {
   InfoCircleOutlined,
   EditOutlined,
   DeleteOutlined,
-} from "@ant-design/icons";
-import type { ColumnsType } from "antd/es/table";
-import type { DataType } from "./data.d";
-import { statusList } from "./_mock";
-import TableSearch from "@/components/TableSearch";
-import TableList from "@/components/TableList";
+} from '@ant-design/icons';
+import type { ColumnsType } from 'antd/es/table';
+import type { DataType } from './data.d';
+import { statusList } from './_mock';
+import TableSearch from '@/components/TableSearch';
+import TableList from '@/components/TableList';
 
 const columns: ColumnsType<DataType> = [
   {
-    title: "序号",
-    dataIndex: "index",
+    title: '序号',
+    dataIndex: 'index',
     render: (text: string, record: DataType, index) => <span>{index + 1}</span>,
   },
   {
-    title: "图片名称",
-    dataIndex: "name",
+    title: '图片名称',
+    dataIndex: 'name',
     render: (text: string, record: DataType, index: number) => {
-      const imgUrl = new URL(text, import.meta.url);
-      return <img src={`${imgUrl}`} width={30} height={30} />;
+      // const imgUrl = new URL(text, import.meta.url);
+      // console.log(imgUrl, 'imgUrl');
+      return <img src={text} width={30} height={30} />;
     },
   },
   {
-    title: "创建日期",
-    dataIndex: "createTime",
+    title: '创建日期',
+    dataIndex: 'createTime',
   },
   {
-    title: "更新日期",
-    dataIndex: "updateTime",
+    title: '更新日期',
+    dataIndex: 'updateTime',
   },
   {
-    title: "图片状态",
-    dataIndex: "status",
+    title: '图片状态',
+    dataIndex: 'status',
     render: (text: string, record: DataType, index: number) => (
       <span>
-        {statusList.map((item) => (item.value === +text ? item.title : ""))}
+        {statusList.map((item) => (item.value === +text ? item.title : ''))}
       </span>
     ),
   },
   {
-    title: "操作",
-    key: "action",
+    title: '操作',
+    key: 'action',
     render: (text: string, record: DataType, index: number) => (
       <Space>
         <Tooltip>
           <Button
-            type="text"
-            shape="circle"
-            icon={<InfoCircleOutlined />}
+            type='text'
+            shape='circle'
+            icon={<InfoCircleOutlined rev={undefined} />}
           ></Button>
         </Tooltip>
         <Tooltip>
-          <Button type="text" shape="circle" icon={<EditOutlined />}></Button>
+          <Button
+            type='text'
+            shape='circle'
+            icon={<EditOutlined rev={undefined} />}
+          ></Button>
         </Tooltip>
         <Tooltip>
-          <Button type="text" shape="circle" icon={<DeleteOutlined />}></Button>
+          <Button
+            type='text'
+            shape='circle'
+            icon={<DeleteOutlined rev={undefined} />}
+          ></Button>
         </Tooltip>
       </Space>
     ),
@@ -67,21 +76,21 @@ const columns: ColumnsType<DataType> = [
 
 const searchList = [
   {
-    name: "keyWord",
-    type: "input",
-    placeholder: "请输入关键词",
+    name: 'keyWord',
+    type: 'input',
+    placeholder: '请输入关键词',
     allowClear: true,
   },
   {
-    name: "status",
-    type: "select",
-    placeholder: "请选择状态",
+    name: 'status',
+    type: 'select',
+    placeholder: '请选择状态',
     allowClear: true,
     optionsList: statusList,
   },
   {
-    name: "createTime",
-    type: "dateTime",
+    name: 'createTime',
+    type: 'dateTime',
   },
 ];
 
@@ -94,11 +103,12 @@ const ImageManagement: React.FC = () => {
       arr.push({
         key: i,
         id: i,
-        name: "../../assets/images/avatar_image.jpg",
-        createTime: "2022-01-01 13:13:13",
-        updateTime: "2022-01-01 13:13:13",
+        name: new URL('../../assets/images/avatar_image.jpg', import.meta.url)
+          .href,
+        createTime: '2022-01-01 13:13:13',
+        updateTime: '2022-01-01 13:13:13',
         status: 1,
-        link: "",
+        link: '',
       });
     }
     setTableLoading(true);
@@ -108,9 +118,18 @@ const ImageManagement: React.FC = () => {
     }, 3000);
   }, []);
   return (
-    <div className="container">
+    <div className='container'>
       {/* 查询项 */}
-      <TableSearch list={searchList} />
+      <TableSearch
+        list={searchList}
+        search={undefined}
+        onSearch={function (values: any): void {
+          throw new Error('Function not implemented.');
+        }}
+        onReset={function (event: any): void {
+          throw new Error('Function not implemented.');
+        }}
+      />
       {/* 表格项 */}
       <TableList columns={columns} dataSource={data} loading={tableLoading} />
     </div>

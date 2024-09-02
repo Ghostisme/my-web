@@ -22,7 +22,7 @@ const BasicLayout = (props: {
     | null
     | undefined;
 }) => {
-  // console.log('BasicLayout', props);
+  // console.log('BasicLayout', props.children);
   // console.log(props?.children, 'props?.children');
   return (
     <Layout className='container-layout'>

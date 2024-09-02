@@ -20,6 +20,7 @@ const useUserHook = () => {
     username: '',
     role: 'user',
   });
+  // console.log("useUserHook => ", auth);
   const key = 'qgajvd17wljhaicq';
   const loginFn = async (params: Login.LoginParams) => {
     const res = await Api.login({

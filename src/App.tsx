@@ -21,6 +21,7 @@ const App: React.FC = () => {
       setLocale(newZhCn);
     }
   };
+  // console.log(useUser.auth, "App");
   // useEffect(() => {
   //   if (!useUser.auth.isLogin) {
   //     history.push('/login');

@@ -12,7 +12,7 @@ import DefaultRegister from './DefaultRegister';
 import MobileRegister from './MobileRegister';
 import EmailRegister from './EmailRegister';
 import Register from './Register';
-import { setCache, getCache } from '@/utils';
+import { setCache, getCache, clearCache } from '@/utils';
 import type * as DataType from './data.d';
 
 import './index.less';
@@ -63,12 +63,13 @@ export default function index(props: any) {
   // 登录逻辑
   useEffect(() => {
     const localLoginInfo = JSON.parse(
-      localStorage.getItem('loginInfo') || '{}'
+      getCache('loginInfo') || '{}'
     );
     localLoginInfo.remember && form.setFieldsValue(localLoginInfo);
   }, [remember, form]);
   useEffect(() => {
-    setCache('userInfo', JSON.stringify(props.auth));
+    // console.log(props.auth, "cczxczzccxz");
+    // setCache('userInfo', JSON.stringify(props.auth));
     if (props.auth.isLogin) {
       // 登录过
       history.push('/welcome');
@@ -81,9 +82,11 @@ export default function index(props: any) {
     setRemember(values.remember);
     if (values.remember) {
       // 记住账号
-      localStorage.setItem('loginInfo', JSON.stringify(values));
+      setCache('loginInfo', JSON.stringify(values));
+      // localStorage.setItem('loginInfo', JSON.stringify(values));
     } else {
-      localStorage.removeItem('loginInfo');
+      clearCache('loginInfo')
+      // localStorage.removeItem('loginInfo');
     }
     const res = await props.login(params);
     console.log(res, '测试登录接口');
@@ -95,6 +98,7 @@ export default function index(props: any) {
         username: res.user.username,
         role: res.user.role.role,
       });
+      setCache('userInfo', JSON.stringify(props.auth));
       // 登录成功
       history.push('/welcome');
     }
@@ -116,7 +120,7 @@ export default function index(props: any) {
         {activeKey === 'login' && (
           <div className='login-form-box'>
             <div className='form-title'>后台登录</div>
-            <Form className='login-form' form={form} onFinish={handleFinish}>
+            <Form className='login-form' form={form} onFinish={() => handleFinish}>
               <Form.Item
                 label=''
                 name='username'

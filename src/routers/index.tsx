@@ -55,7 +55,7 @@ const renderRoutes = (routes: any[], props: any) => {
             exact={route.exact}
             strict={route.strict}
             render={() => {
-              console.log(route.childRoutes, 'route.childRoutes');
+              console.log(route.childRoutes, 'route.childRoutes', props.auth);
               // if (route.childRoutes && route.childRoutes.length !== 0) {
               //   renderRoutes(route.childRoutes, props);
               // }
@@ -86,9 +86,12 @@ const AppRoutes = (props: any) => {
   // const { auth, login, logout, setAuth } = useUserHook();
   useEffect(() => {
     const userInfo = JSON.parse(getCache('userInfo') || '{}');
-    if (userInfo.isLogin) {
-      props.setAuth(userInfo);
-    }
+    // console.log("AppRoutes => ", userInfo);
+    // if (userInfo.isLogin) {
+    //   console.log(userInfo, "====");
+    //   props.setAuth(userInfo);
+    // }
+    // console.log(userInfo.isLogin, "userInfo.isLogin");
     if (!userInfo.isLogin) {
       history.push('/login');
     }
